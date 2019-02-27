@@ -4,6 +4,7 @@
 red='\e[1;31m%s\e[0m\n'
 green='\e[1;32m%s\e[0m\n'
 blue='\e[1;34m%s\e[0m\n'
+magenta='\e[1;35m%s\e[0m\n'
 
 # Make sure we run under sudo
 if [ $(id -u) != 0 ]; then
@@ -45,15 +46,15 @@ if [[ -z $DOMAIN ]] || [[ -z $DOCUMENT_ROOT ]]; then
 fi
 
 if [[ -z $ENTRYPOINT ]]; then
-    $ENTRYPOINT="index.html"
+    ENTRYPOINT="index.html"
 fi
 
 # Virtual Host informations
-printf "Creating virtual host...\n"
-printf "Document root: $DOCUMENT_ROOT\n"
-printf "Domain: $DOMAIN\n"
-printf "Entrypoint: $ENTRYPOINT\n"
-printf "SSL: $SSL\n"
+printf "$magenta" "Creating virtual host..."
+printf "    Document root: $DOCUMENT_ROOT\n"
+printf "    Domain: $DOMAIN\n"
+printf "    Entrypoint: $ENTRYPOINT\n"
+printf "    SSL: $SSL\n"
 
 no_ssl_template="<VirtualHost *:80>
     ServerAdmin sukovic.aleksa@gmail.com

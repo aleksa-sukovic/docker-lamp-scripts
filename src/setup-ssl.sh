@@ -4,6 +4,7 @@
 red='\e[1;31m%s\e[0m\n'
 green='\e[1;32m%s\e[0m\n'
 blue='\e[1;34m%s\e[0m\n'
+magenta='\e[1;35m%s\e[0m\n'
 
 # Make sure we run under sudo
 if [ $(id -u) != 0 ]; then
@@ -34,7 +35,7 @@ fi
 # Checking if certificate exists
 cd $WORKING_DIR
 if [ -f /etc/ssl/certs/$DOMAIN.crt ] && [ -f /etc/ssl/certs/$DOMAIN.key ]; then
-    printf "Certificate and domain exists, skipping creation...\n"
+    printf "$magenta" "Certificate and domain exists, skipping creation..."
     exit 1
 else
    if [ ! -d ./temp ]; then
@@ -73,7 +74,7 @@ else
     openssl x509 -req -in ./temp/$DOMAIN.csr -CA temp/temp_pem.pem -CAkey temp/temp_key.key -CAcreateserial -out $DOMAIN.crt -days 3650 -sha256 -extfile ./temp/ext_config.ext
 
     rm -rf ./temp
-    printf "Successfully generated certificate for $DOMAIN\n"
+    printf "$magenta" "Successfully generated certificate for $DOMAIN"
 fi
 
 cp $DOMAIN.crt /etc/ssl/certs/$DOMAIN.crt

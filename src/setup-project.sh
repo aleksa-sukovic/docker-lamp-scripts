@@ -4,6 +4,7 @@
 red='\e[1;31m%s\e[0m\n'
 green='\e[1;32m%s\e[0m\n'
 blue='\e[1;34m%s\e[0m\n'
+magenta='\e[1;35m%s\e[0m\n'
 
 # Reading arguments
 while [ "$1" != "" ]
@@ -20,6 +21,11 @@ do
         PROJECT_PARENT_DIR="/var/www"   # assuming project is located at root
         shift
         ;;
+        -e|--environment)
+        shift
+        ENVIRONMENT=$1                      # Host environment [linux, darwin]
+        shift
+        ;;
     esac
 done
 
@@ -29,8 +35,12 @@ if [[ -z $PROJECT ]]; then
     PROJECT=${PWD##*/}                   # current folder name (e.g. project_1)
 fi
 
+if [[ -z $ENVIRONMENT ]]; then
+    ENVIRONMENT='linux'
+fi
+
 # Checking if setup folder and configuration file is present
-printf "$blue" "Checking project: '$PROJECT'\n"
+printf "$blue" "Checking project: '$PROJECT'"
 SETUP_FOLDER="${PROJECT_PARENT_DIR}/${PROJECT}/setup"
 
 if [[ ! -d $SETUP_FOLDER ]] || [[ ! -f $SETUP_FOLDER/setup.conf ]]; then
@@ -39,7 +49,7 @@ if [[ ! -d $SETUP_FOLDER ]] || [[ ! -f $SETUP_FOLDER/setup.conf ]]; then
 fi
 
 # Loading setup.conf
-printf "Project '$PROJECT' contains 'setup.conf' file, proceding with configuration...\n"
+printf "$magenta" "Project '$PROJECT' contains 'setup.conf' file, proceding with configuration..."
 . $SETUP_FOLDER'/setup.conf'
 
 # Generating SSL certificate if neccesary
@@ -49,7 +59,7 @@ if [[ $SETUP_SSL -eq 1 ]]; then
 
     result=$?
 
-    if [[ $result -eq 0 ]] && [[ $SETUP_ENVIRONMENT = 'darwin' ]]; then
+    if [[ $result -eq 0 ]] && [[ $ENVIRONMENT = 'darwin' ]]; then
         MESSAGE=" sudo security add-trusted-cert -d -r trustAsRoot -p ssl -k /Library/Keychains/System.keychain ${PROJECT}/setup/$SETUP_DOMAIN.crt"
     elif [[ $result -eq 0 ]]; then
         MESSAGE="sudo cp ${PROJECT}/setup/$SETUP_DOMAIN.crt /etc/ca-certificates/trust-source/anchors/"
@@ -69,4 +79,5 @@ if [[ $SETUP_SSL -eq 0 ]]; then
 fi
 eval "$CMD"
 
-printf "$blue" "Configuration for project '$PROJECT' is complete!\n\n"
+printf "$green" "Configuration for project '$PROJECT' is complete!"
+printf ""
