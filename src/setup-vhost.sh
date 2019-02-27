@@ -61,6 +61,8 @@ no_ssl_template="<VirtualHost *:80>
     ServerName $DOMAIN
     DirectoryIndex $ENTRYPOINT
 
+    ErrorLog /var/log/apache2/$DOMAIN.log
+
     <Directory $DOCUMENT_ROOT>
         Options Indexes FollowSymLinks
         AllowOverride All
@@ -78,6 +80,8 @@ ssl_template="<VirtualHost *:443>
     SSLEngine on
     SSLCertificateFile /etc/ssl/certs/$DOMAIN.crt
     SSLCertificateKeyFile /etc/ssl/certs/$DOMAIN.key
+
+    ErrorLog /var/log/apache2/$DOMAIN.log
 
     <Directory $DOCUMENT_ROOT>
         Options Indexes FollowSymLinks
